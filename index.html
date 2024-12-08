@@ -14,7 +14,6 @@
             margin: 0;
             background: linear-gradient(to bottom, #d4af37, #f2e8c9);
         }
-
         #login-container {
             text-align: center;
             background: #fff;
@@ -22,7 +21,6 @@
             border-radius: 10px;
             box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
         }
-
         #login-container input {
             width: 80%;
             padding: 10px;
@@ -30,7 +28,6 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-
         #login-container button {
             padding: 10px 20px;
             background-color: #d4af37;
@@ -40,19 +37,30 @@
             font-size: 1em;
             cursor: pointer;
         }
-
         #login-container button:hover {
             background-color: #b99229;
         }
-
         #error {
             color: red;
             margin-top: 10px;
             display: none;
         }
+        #originalContentContainer {
+            width: 100%;
+            height: 100%;
+            display: none; /* Hidden until login is successful */
+            position: absolute;
+            top:0; left:0;
+        }
+        iframe {
+            width: 100vw;
+            height: 100vh;
+            border: none;
+        }
     </style>
 </head>
 <body>
+    <!-- Login Form -->
     <div id="login-container">
         <h2>This website is dedicated to a special person</h2>
         <input type="text" id="username" placeholder="Enter Username" required />
@@ -61,234 +69,28 @@
         <div id="error">Invalid username or password. Please try again.</div>
     </div>
 
+    <div id="originalContentContainer"></div>
+
     <script>
-        // Function to validate login credentials
         function validateLogin() {
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
 
-            // Credentials
             const correctUsername = "Gnanasoundarya";
             const correctPassword = "8122740235";
 
             if (username === correctUsername && password === correctPassword) {
-                // Hide login container
+                // Hide login form
                 document.getElementById("login-container").style.display = "none";
 
-                // Inject your original HTML content
-                document.body.innerHTML = `
-                    <!DOCTYPE html>
-                    <html lang="en">
-                    <head>
-                        <meta charset="UTF-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>Happy Birthday, Gnanasoundarya!</title>
-                        <style>
-                            * {
-                                margin: 0;
-                                padding: 0;
-                                box-sizing: border-box;
-                            }
-
-                            body {
-                                font-family: Arial, sans-serif;
-                                height: 100vh;
-                                overflow: hidden;
-                                transition: all 1s ease;
-                                background: linear-gradient(to bottom, #d4af37, #f2e8c9);
-                                cursor: pointer;
-                                position: relative;
-                            }
-
-                            #message {
-                                display: flex;
-                                justify-content: center;
-                                align-items: center;
-                                color: #4a2f02;
-                                font-size: 1.5em;
-                                font-weight: bold;
-                                text-align: center;
-                                transition: transform 0.5s ease, background 1s ease, color 1s ease, width 1s ease, height 1s ease, border-radius 1s ease, box-shadow 1s ease;
-                                z-index: 10;
-
-                                /* Default shape - oval */
-                                width: 300px;
-                                height: 150px;
-                                background: #f7f1d3;
-                                border-radius: 50% / 30%;
-                                box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
-                                position: absolute;
-                                left: 50%;
-                                top: 50%;
-                                transform: translate(-50%, -50%);
-                            }
-
-                            /* Perfect symmetrical heart shape */
-                            .heart {
-                                position: absolute;
-                                width: 60px;
-                                height: 60px;
-                                transform: rotate(-45deg);
-                                background: hsl(var(--hue), 70%, 60%);
-                                animation: floatUp var(--speed) infinite ease-in-out;
-                            }
-
-                            .heart:before,
-                            .heart:after {
-                                content: "";
-                                position: absolute;
-                                width: 60px;
-                                height: 60px;
-                                background: inherit;
-                                border-radius: 50%;
-                            }
-
-                            .heart:before {
-                                top: -30px;
-                                left: 0;
-                            }
-
-                            .heart:after {
-                                top: 0;
-                                left: 30px;
-                            }
-
-                            /* Festive colorful splashes */
-                            .splash {
-                                position: absolute;
-                                width: 20px;
-                                height: 20px;
-                                background: hsl(var(--hue), 90%, 60%);
-                                border-radius: 50%;
-                                animation: fadeSplash 1.5s ease forwards;
-                                opacity: 0;
-                            }
-
-                            @keyframes fadeSplash {
-                                0% { transform: scale(1); opacity: 1; }
-                                100% { transform: scale(3); opacity: 0; }
-                            }
-
-                            @keyframes floatUp {
-                                0% { transform: translateY(0) rotate(-45deg); }
-                                100% { transform: translateY(-300px) rotate(-45deg); }
-                            }
-
-                            /* Final Message */
-                            .final-message {
-                                position: absolute;
-                                top: 50%;
-                                left: 50%;
-                                transform: translate(-50%, -50%);
-                                font-size: 3em;
-                                font-family: 'Brush Script MT', cursive;
-                                font-weight: bold;
-                                color: hsl(0, 80%, 50%);
-                                animation: pop 2s infinite ease-in-out;
-                                z-index: 20;
-                            }
-
-                            @keyframes pop {
-                                0%, 100% { transform: translate(-50%, -50%) scale(1); }
-                                50% { transform: translate(-50%, -50%) scale(1.2); }
-                            }
-
-                            /* Love Meter (top-right corner) */
-                            #loveMeter {
-                                position: absolute;
-                                top: 10px;
-                                right: 10px;
-                                background: rgba(255,255,255,0.8);
-                                padding: 10px;
-                                border-radius: 10px;
-                                font-size: 1em;
-                                color: #333;
-                                z-index: 50;
-                                box-shadow: 0px 2px 10px rgba(0,0,0,0.2);
-                            }
-
-                            /* Gift icon (bottom-right corner) */
-                            #gift {
-                                position: absolute;
-                                bottom: 10px;
-                                right: 10px;
-                                font-size: 2em;
-                                cursor: pointer;
-                                z-index: 50;
-                                transition: transform 0.3s ease;
-                            }
-
-                            #gift:hover {
-                                transform: scale(1.2);
-                            }
-
-                            /* Gift modal */
-                            #giftModal {
-                                position: fixed;
-                                top: 0;
-                                left: 0;
-                                width:100%;
-                                height:100%;
-                                background: rgba(0,0,0,0.4);
-                                display: none;
-                                justify-content: center;
-                                align-items: center;
-                                z-index: 100;
-                            }
-
-                            #giftModalContent {
-                                background: #fff;
-                                padding: 20px;
-                                border-radius: 10px;
-                                font-weight: bold;
-                                font-size: 1.2em;
-                                box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
-                                text-align: center;
-                            }
-
-                            #giftModalContent button {
-                                margin-top: 10px;
-                                padding: 5px 10px;
-                                cursor: pointer;
-                                border: none;
-                                background: #f0c040;
-                                border-radius: 5px;
-                                font-size: 1em;
-                            }
-
-                            /* Fireworks canvas */
-                            #fireworksCanvas {
-                                position: absolute;
-                                top:0;
-                                left:0;
-                                width:100%;
-                                height:100%;
-                                pointer-events: none;
-                                display: none;
-                                z-index: 5;
-                            }
-                        </style>
-                    </head>
-                    <body onclick="changeScreen()">
-                        <div id="message">Happy Birthday, Gnanasoundarya!</div>
-                        <div id="loveMeter">Love Meter: 0%</div>
-                        <div id="gift">🎁</div>
-                        <div id="giftModal">
-                            <div id="giftModalContent">
-                                <div id="giftMessage"></div>
-                                <button onclick="closeGift()">Close</button>
-                            </div>
-                        </div>
-                        <canvas id="fireworksCanvas"></canvas>
-
-                        <script>
-                            // Original script goes here...
-                        </script>
-                    </body>
-                    </html>
-                `;
+                // Create an iframe that loads the original HTML file directly
+                const iframe = document.createElement("iframe");
+                iframe.src = "original.html"; // The file that contains your original code
+                
+                const container = document.getElementById("originalContentContainer");
+                container.style.display = "block";
+                container.appendChild(iframe);
             } else {
-                // Display error message
                 document.getElementById("error").style.display = "block";
             }
         }
