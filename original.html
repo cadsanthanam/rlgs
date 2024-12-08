@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, Gnanasoundarya!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            transition: all 1s ease;
+            background: linear-gradient(to bottom, #d4af37, #f2e8c9);
+            cursor: pointer;
+            position: relative;
+        }
+
+        #message {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #4a2f02;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            transition: transform 0.5s ease, background 1s ease, color 1s ease, width 1s ease, height 1s ease, border-radius 1s ease, box-shadow 1s ease;
+            z-index: 10;
+
+            /* Default shape - oval */
+            width: 300px;
+            height: 150px;
+            background: #f7f1d3;
+            border-radius: 50% / 30%;
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Perfect symmetrical heart shape */
+        .heart {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            transform: rotate(-45deg);
+            background: hsl(var(--hue), 70%, 60%);
+            animation: floatUp var(--speed) infinite ease-in-out;
+        }
+
+        .heart:before,
+        .heart:after {
+            content: "";
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: inherit;
+            border-radius: 50%;
+        }
+
+        .heart:before {
+            top: -30px;
+            left: 0;
+        }
+
+        .heart:after {
+            top: 0;
+            left: 30px;
+        }
+
+        /* Festive colorful splashes */
+        .splash {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: hsl(var(--hue), 90%, 60%);
+            border-radius: 50%;
+            animation: fadeSplash 1.5s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeSplash {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(-45deg); }
+            100% { transform: translateY(-300px) rotate(-45deg); }
+        }
+
+        /* Final Message */
+        .final-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3em;
+            font-family: 'Brush Script MT', cursive;
+            font-weight: bold;
+            color: hsl(0, 80%, 50%);
+            animation: pop 2s infinite ease-in-out;
+            z-index: 20;
+        }
+
+        @keyframes pop {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        /* Love Meter (top-right corner) */
+        #loveMeter {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.8);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 1em;
+            color: #333;
+            z-index: 50;
+            box-shadow: 0px 2px 10px rgba(0,0,0,0.2);
+        }
+
+        /* Gift icon (bottom-right corner) */
+        #gift {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 2em;
+            cursor: pointer;
+            z-index: 50;
+            transition: transform 0.3s ease;
+        }
+
+        #gift:hover {
+            transform: scale(1.2);
+        }
+
+        /* Gift modal */
+        #giftModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width:100%;
+            height:100%;
+            background: rgba(0,0,0,0.4);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        #giftModalContent {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.2em;
+            box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        #giftModalContent button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+            border: none;
+            background: #f0c040;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        /* Fireworks canvas */
+        #fireworksCanvas {
+            position: absolute;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            pointer-events: none;
+            display: none;
+            z-index: 5;
+        }
+    </style>
+</head>
+<body onclick="changeScreen()">
+    <div id="message">Happy Birthday, Gnanasoundarya!</div>
+    <div id="loveMeter">Affection Meter: 0%</div>
+    <div id="gift">🎁</div>
+    <div id="giftModal">
+        <div id="giftModalContent">
+            <div id="giftMessage"></div>
+            <button onclick="closeGift()">Close</button>
+        </div>
+    </div>
+    <canvas id="fireworksCanvas"></canvas>
+
+    <script>
+        let screenCount = 0;
+        let heartCount = 5; // Reduced number of hearts
+        let lovePercent = 0;
+        const giftMessages = [
+            "You were my greatest treasure!",
+            "Your smile brightene my world!",
+            "I cherish every moment with you!",
+            "Your affection brought me satisfaction and completeness to be better!",
+            "You were the light of my life!"
+        ];
+
+        const shapes = [
+            { width: "300px", height: "150px", radius: "50% / 30%", shadow: "0px 8px 15px rgba(0,0,0,0.3)" }, // Oval
+            { width: "300px", height: "150px", radius: "20px", shadow: "0px 8px 20px rgba(0,0,0,0.5)" }, // Rounded Rectangle
+            { width: "250px", height: "250px", radius: "50%", shadow: "0px 10px 25px rgba(0,0,0,0.4)" } // Circle
+        ];
+        const themes = [
+            { bg: "linear-gradient(to bottom, #d4af37, #f2e8c9)", circle: "#f7f1d3", text: "#4a2f02" },
+            { bg: "linear-gradient(to bottom, #4b0082, #9370db)", circle: "#b39ddb", text: "#f8f8ff" },
+            { bg: "linear-gradient(to bottom, #0f4c81, #a2d2ff)", circle: "#afc2d5", text: "#0f3057" }
+        ];
+        const messages = [
+            "Happy Birthday, Gnanasoundarya!",
+            "Wishing you a day as beautiful as your smile.",
+            "You make every moment magical. Celebrate this special day with joy!",
+            "Life is brighter with you in it. Have a fantastic birthday!",
+            "May this year bring you happiness and success in every step you take.",
+            "You are the reason for so many smiles. Today, it's your turn to shine!",
+            "A day to celebrate you, the amazing person you are. Enjoy every moment!",
+            "You still are my everything. Today is a celebration of how wonderful you are.",
+            "With you, every day passed was like a dream. Have a magical birthday!",
+            "Thank you for filling my life with love, laughter, and happiness ."
+        ];
+
+        // Stop event propagation so clicking on gift or modal doesn't trigger message change
+        document.getElementById('gift').addEventListener('click', function(e) {
+            e.stopPropagation();
+            openGift();
+        });
+
+        document.getElementById('giftModal').addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        function closeGift() {
+            document.getElementById('giftModal').style.display = 'none';
+        }
+
+        function openGift() {
+            const msg = giftMessages[Math.floor(Math.random() * giftMessages.length)];
+            document.getElementById('giftMessage').textContent = msg;
+            document.getElementById('giftModal').style.display = 'flex';
+        }
+
+        function createHearts(count) {
+            const body = document.body;
+
+            // Remove existing hearts
+            document.querySelectorAll('.heart').forEach(heart => heart.remove());
+
+            // Add new hearts
+            for (let i = 0; i < count; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.style.top = Math.random() * 100 + '%';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.setProperty('--hue', Math.random() * 360);
+                // Fixed template literal here:
+                heart.style.setProperty('--speed', `${3 + Math.random() * 2}s`); // Each heart different speed
+                document.body.appendChild(heart);
+            }
+        }
+
+        function createSplashes() {
+            for (let i = 0; i < 20; i++) {
+                const splash = document.createElement('div');
+                splash.className = 'splash';
+                splash.style.setProperty('--hue', Math.random() * 360);
+                splash.style.left = Math.random() * 100 + '%';
+                splash.style.top = Math.random() * 100 + '%';
+                document.body.appendChild(splash);
+                setTimeout(() => splash.remove(), 1500);
+            }
+        }
+
+        let fireworksInterval;
+        function startFireworks() {
+            const canvas = document.getElementById('fireworksCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            canvas.style.display = 'block';
+
+            fireworksInterval = setInterval(() => {
+                // Draw random colored bursts
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const radius = 50 + Math.random()*50;
+                const hue = Math.random()*360;
+
+                ctx.beginPath();
+                for (let i=0; i<20; i++){
+                    const angle = Math.PI*2*(i/20);
+                    const px = x + Math.cos(angle)*radius;
+                    const py = y + Math.sin(angle)*radius;
+                    ctx.moveTo(x,y);
+                    ctx.lineTo(px,py);
+                }
+                // Fixed template literal here:
+                ctx.strokeStyle = `hsl(${hue},80%,60%)`;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.closePath();
+
+                // Fade out gradually
+                ctx.fillStyle = 'rgba(0,0,0,0.1)';
+                ctx.fillRect(0,0,canvas.width,canvas.height);
+            }, 500);
+        }
+
+        function stopFireworks() {
+            clearInterval(fireworksInterval);
+        }
+
+        function updateLoveMeter() {
+            lovePercent = Math.min((screenCount / messages.length) * 100, 100);
+            // Fixed template literal here:
+            document.getElementById('loveMeter').textContent = `Affection Meter: ${Math.floor(lovePercent)}%`;
+        }
+
+        function changeScreen() {
+            const messageEl = document.getElementById("message");
+
+            if (screenCount < messages.length - 1) {
+                // Update theme and shape
+                const theme = themes[screenCount % themes.length];
+                const shape = shapes[screenCount % shapes.length];
+                document.body.style.background = theme.bg;
+                messageEl.style.background = theme.circle;
+                messageEl.style.color = theme.text;
+                messageEl.textContent = messages[screenCount];
+                messageEl.style.width = shape.width;
+                messageEl.style.height = shape.height;
+                messageEl.style.borderRadius = shape.radius;
+                messageEl.style.boxShadow = shape.shadow;
+
+                createHearts(heartCount);
+                createSplashes();
+
+                screenCount++;
+                updateLoveMeter();
+            } else {
+                // Final screen
+                document.body.style.background = "linear-gradient(to bottom, #ffd6e0, #ff9a9e)";
+                document.querySelectorAll(".heart").forEach(heart => heart.remove());
+                messageEl.remove();
+
+                const finalMessage = document.createElement('div');
+                finalMessage.className = 'final-message';
+                finalMessage.textContent = "Happy Birthday, Gnanasoundarya!";
+                document.body.appendChild(finalMessage);
+
+                createSplashes();
+                updateLoveMeter();
+
+                // Start fireworks on final screen
+                startFireworks();
+            }
+        }
+
+        // Initialize hearts and love meter
+        createHearts(heartCount);
+        updateLoveMeter();
+    </script>
+</body>
+</html>
+
+
+
